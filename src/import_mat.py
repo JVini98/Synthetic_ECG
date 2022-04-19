@@ -1,6 +1,7 @@
 from scipy.io import loadmat
 import pandas as pd
 import os
+import shutil
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -9,6 +10,8 @@ os.makedirs(out_dir, exist_ok=True)
 
 df = pd.read_csv(r'/home/jvini/PycharmProjects/TFG_ECG/training2017/REFERENCE-original.csv')
 categories = df.values
+
+af_files_counter = 1
 
 for i in range(1, 8528):
 
@@ -25,12 +28,29 @@ for i in range(1, 8528):
         ecg = loadmat(f'training2017/{var}.mat')
         ecg_array = ecg['val'][0]
 
-        file = open(f'{out_dir}/{i}.asc', "a")
+        if 5000 <= ecg_array.size < 10000:
 
-        for line in ecg_array:
-            file.write(str(line))
-            file.write("\n")
-            file.flush()
+            file = open(f'{out_dir}/{10001 + af_files_counter*10}.asc', "a")
+
+            for i ,line in enumerate(ecg_array):
+
+                if i == 5000: break
+
+                file.write(str(line))
+                file.write("\n")
+                file.flush()
+
+            shutil.copy(f'{out_dir}/{10001 + af_files_counter * 10}.asc',
+                        f'{out_dir}/{10002 + af_files_counter * 10}.asc')
+            shutil.copy(f'{out_dir}/{10001 + af_files_counter * 10}.asc',
+                        f'{out_dir}/{10003 + af_files_counter * 10}.asc')
+            shutil.copy(f'{out_dir}/{10001 + af_files_counter * 10}.asc',
+                        f'{out_dir}/{10004 + af_files_counter * 10}.asc')
+            shutil.copy(f'{out_dir}/{10001 + af_files_counter * 10}.asc',
+                        f'{out_dir}/{10005 + af_files_counter * 10}.asc')
+
+            af_files_counter = af_files_counter + 1
+            
 
 
 

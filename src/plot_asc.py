@@ -2,17 +2,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import ecg_plot
 
-file_path = '/home/jvini/Escritorio/deepfake-ecg/0.asc'
-ecg = np.loadtxt(file_path, dtype=None, delimiter=' ')
-ecg = ecg.T
+N_subplots = 3
 
-norm = np.linalg.norm(ecg)
-ecg = ecg/norm
+for epochs in (500,1000,1500,2000):
 
-fig, axs = plt.subplots(8)
+    fig, axs = plt.subplots(N_subplots,figsize=(16,15))
 
-for i in range(8):
-    axs[i].plot(ecg[i])
+    for i in range(N_subplots): 
+        file_path = "/home/jvini/Escritorio/deepfake-ecg/deepfakeecg/exp_gpu1_out/{}_epoch/{}.asc".format(epochs, i)
+        ecg = np.loadtxt(file_path, dtype=None, delimiter=' ')
+        ecg = ecg.T
 
-plt.savefig('represented_ecg.png', dpi=300)
-plt.show()
+        norm = np.linalg.norm(ecg)
+        ecg = ecg/norm
+
+        axs[i].plot(ecg)
+        axs[i].grid()
+
+
+    fig.suptitle('{} epoch training'.format(epochs))
+    fig.savefig('{}_epoch.png'.format(epochs))
+    plt.show()
